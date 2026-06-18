@@ -410,6 +410,8 @@
 
     <button id="playButton" class="yellowButton">▶</button>
     <button id="nameButton" class="yellowButton">Name: Hase</button>
+
+    <div style="position:absolute;bottom:6px;right:10px;color:rgba(255,255,255,0.55);font-size:12px;z-index:31;">Build 2 · Quermodus aktiv</div>
   </div>
 
   <div id="touchControls">
@@ -1405,9 +1407,35 @@
        18) Game Loop
        ============================================================ */
 
+    function isPortraitPhone() {
+      return window.innerHeight > window.innerWidth &&
+             Math.min(window.innerWidth, window.innerHeight) < 950;
+    }
+
+    function drawRotateMessage() {
+      ctx.fillStyle = "#062406";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.font = "bold " + Math.round(canvas.width * 0.12) + "px Arial";
+      ctx.fillText("📱↻", canvas.width / 2, canvas.height / 2 - canvas.width * 0.08);
+      ctx.font = "bold " + Math.round(canvas.width * 0.05) + "px Arial";
+      ctx.fillText("Bitte quer drehen", canvas.width / 2, canvas.height / 2 + canvas.width * 0.04);
+      ctx.textAlign = "left";
+    }
+
     function gameLoop(time) {
       const deltaTime = Math.min(32, time - lastTime);
       lastTime = time;
+
+      // Quermodus-Zwang direkt auf dem Canvas (unabhängig von HTML/CSS).
+      if (isPortraitPhone()) {
+        keys.left = false;
+        keys.right = false;
+        drawRotateMessage();
+        requestAnimationFrame(gameLoop);
+        return;
+      }
 
       if (gameState === "playing") {
         updateGame(deltaTime);
