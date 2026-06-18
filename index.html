@@ -274,19 +274,21 @@
     }
 
     #touchControls {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 14px;
       display: none;
-      justify-content: center;
-      gap: 12px;
-      z-index: 15;
-      padding: 0 10px;
-      box-sizing: border-box;
     }
 
-    #touchControls button {
+    .touchCluster {
+      position: fixed;
+      bottom: 14px;
+      z-index: 15;
+      display: flex;
+      gap: 12px;
+    }
+
+    #ctrlMove { left: 16px; }
+    #ctrlJump { right: 16px; }
+
+    .touchCluster button {
       min-width: 78px;
       min-height: 62px;
       border: 3px solid white;
@@ -297,9 +299,13 @@
       font-weight: bold;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
       touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    #touchControls #jumpBtn {
+    #jumpBtn {
       background: rgba(43, 214, 63, 0.92);
     }
 
@@ -325,26 +331,28 @@
 
     #rotateNotice {
       display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #062406;
+      color: #fff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.6;
     }
 
+    /* Per Media-Query (Standard) ... */
     @media (max-width: 950px) and (orientation: portrait) {
-      #rotateNotice {
-        display: flex;
-        position: fixed;
-        inset: 0;
-        z-index: 100;
-        background: #062406;
-        color: #fff;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 30px;
-        font-size: 20px;
-        font-weight: bold;
-        line-height: 1.6;
-      }
+      #rotateNotice { display: flex; }
     }
+
+    /* ... und per JS erzwungen (falls der In-App-Browser orientation ignoriert) */
+    #rotateNotice.show { display: flex; }
   </style>
 </head>
 
@@ -405,9 +413,13 @@
   </div>
 
   <div id="touchControls">
-    <button id="leftBtn" aria-label="links">◀</button>
-    <button id="rightBtn" aria-label="rechts">▶</button>
-    <button id="jumpBtn" aria-label="springen">⤒</button>
+    <div id="ctrlMove" class="touchCluster">
+      <button id="leftBtn" aria-label="links">◀</button>
+      <button id="rightBtn" aria-label="rechts">▶</button>
+    </div>
+    <div id="ctrlJump" class="touchCluster">
+      <button id="jumpBtn" aria-label="springen">⤒</button>
+    </div>
   </div>
 
   <div id="gameOverText">
@@ -1496,6 +1508,18 @@
     /* ============================================================
        21) Initialisierung
        ============================================================ */
+
+    // Quermodus erzwingen – zusätzlich zur CSS-Media-Query auch per JS,
+    // damit es in jedem (auch In-App-)Browser zuverlässig greift.
+    const rotateNotice = document.getElementById("rotateNotice");
+    function checkOrientation() {
+      const portrait = window.innerHeight > window.innerWidth;
+      const small = Math.min(window.innerWidth, window.innerHeight) < 950;
+      rotateNotice.classList.toggle("show", portrait && small);
+    }
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("orientationchange", checkOrientation);
+    checkOrientation();
 
     resizeCanvas();
     createStartWorld();
