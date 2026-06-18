@@ -18,6 +18,17 @@
       overflow: hidden;
       background: black;
       font-family: Arial, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     #gameCanvas {
@@ -311,10 +322,38 @@
       font-size: 20px !important;
       padding: 8px 16px;
     }
+
+    #rotateNotice {
+      display: none;
+    }
+
+    @media (max-width: 950px) and (orientation: portrait) {
+      #rotateNotice {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #062406;
+        color: #fff;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 30px;
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.6;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <div id="rotateNotice">
+    <div style="font-size:46px;">📱↻</div>
+    Bitte drehe dein Gerät in den Quermodus,<br />um zu spielen.
+  </div>
+
   <canvas id="gameCanvas"></canvas>
 
   <div id="info">
