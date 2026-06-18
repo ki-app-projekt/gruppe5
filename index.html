@@ -1543,7 +1543,17 @@
     function checkOrientation() {
       const portrait = window.innerHeight > window.innerWidth;
       const small = Math.min(window.innerWidth, window.innerHeight) < 950;
-      rotateNotice.classList.toggle("show", portrait && small);
+
+      if (portrait && small) {
+        // Maße direkt setzen – keine Abhängigkeit von inset/Media-Query/Klassen.
+        rotateNotice.style.cssText =
+          "display:flex;position:fixed;top:0;left:0;width:100%;height:100%;" +
+          "z-index:1000;background:#062406;color:#fff;flex-direction:column;" +
+          "align-items:center;justify-content:center;text-align:center;padding:30px;" +
+          "font-size:20px;font-weight:bold;line-height:1.6;";
+      } else {
+        rotateNotice.style.display = "none";
+      }
     }
     window.addEventListener("resize", checkOrientation);
     window.addEventListener("orientationchange", checkOrientation);
